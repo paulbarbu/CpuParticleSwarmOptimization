@@ -1,4 +1,4 @@
-package pkg
+package simulator
 
 import scala.xml.XML
 import java.nio.file.Paths
@@ -16,7 +16,7 @@ import RsbArchitecture._
  * 
  * One configuration will be simulated on all the traces
  */
-class CpuCfg(
+class PSATSimCfg(
     val name: String,
     var superscalar: Int,
     var rename: Int,
@@ -28,14 +28,22 @@ class CpuCfg(
     var integerFu: Int,
     var floatingFu: Int,
     var branchFu: Int,
-    var memoryFu: Int){
+    var memoryFu: Int) {
   
   val input = name + ".xml"
   val output = name + "_out.xml"
   val traces = List("applu.tra", "compress.tra", "epic.tra", "fpppp.tra", "ijpeg.tra", "mpeg2d.tra", "mpeg2e.tra", "pegwitd.tra", "perl.tra", "toast.tra")
   
-  def saveXml(root: String) {
-    XML.save(Paths.get(root, name + ".xml").toString, getXml)  
+  def save(path: String) = {
+    XML.save(Paths.get(path, name + ".xml").toString, getXml)
+  }
+  
+  def validate: Boolean = {
+    return true
+  }
+  
+  def randomize() = {
+    
   }
   
   private def getXml = {

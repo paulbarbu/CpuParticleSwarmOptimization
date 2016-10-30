@@ -1,29 +1,26 @@
-package pkg
+package simulator
 
 import sys.process._
 import java.nio.file.Paths
 import scala.xml.XML
 
-class PSATSim(val simPath: String){  
+class PSATSim(val simPath: String) {
   val NumThreads = 5
-  val SimName = "psatsim_con.exe"
   
-  def run(cpu: CpuCfg) = {
+  def run(cpu: PSATSimCfg, simPath: String, simName: String, simArgs: Seq[String] = Seq()) = {
     val cmd = Seq(
-        Paths.get(simPath, SimName).toString,
+        Paths.get(simPath, simName).toString,
         cpu.input,
         cpu.output,
         "-t", NumThreads.toString,
-        "-cg")
+        "-cg") ++ simArgs
     
     println("Running PSATSim from command line: " + cmd)
     val x = Process(cmd, new java.io.File(simPath)).!!
     println(x)
-    
-    readResults(cpu.output)
   }
   
-  private def readResults(outFile: String) = {
+  def readResults(outFile: String) = {
     val resultsXml = XML.loadFile(Paths.get(simPath, outFile).toString)
     val variations = resultsXml \\ "psatsim_results" \\ "variation"
     
