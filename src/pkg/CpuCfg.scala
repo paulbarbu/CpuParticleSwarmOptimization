@@ -1,7 +1,8 @@
+package pkg
+
 import scala.xml.XML
 import java.nio.file.Paths
 
-/** Create and configure a CPU configuration to be simulated */
 object RsbArchitecture extends Enumeration
 {
   type RsbArchitecture = Value
@@ -10,6 +11,11 @@ object RsbArchitecture extends Enumeration
 
 import RsbArchitecture._
 
+/**
+ * Create and configure a CPU configuration to be simulated
+ * 
+ * One configuration will be simulated on all the traces
+ */
 class CpuCfg(
     val name: String,
     var superscalar: Int,
@@ -17,7 +23,6 @@ class CpuCfg(
     var reorder: Int, 
     var rsb_architecture: RsbArchitecture,
     var separate_dispatch: Boolean,
-    var trace: String,
     var vdd: Double,
     var freq: Int,
     var integerFu: Int,
@@ -27,15 +32,15 @@ class CpuCfg(
   
   val input = name + ".xml"
   val output = name + "_out.xml"
+  val traces = List("applu.tra", "compress.tra", "epic.tra", "fpppp.tra", "ijpeg.tra", "mpeg2d.tra", "mpeg2e.tra", "pegwitd.tra", "perl.tra", "toast.tra")
   
   def saveXml(root: String) {
     XML.save(Paths.get(root, name + ".xml").toString, getXml)  
   }
   
-  private def getXml = 
-    <psatsim>
-			<config name={name}>
-				<general							
+  private def getXml = {
+    def generalNode(trace: String) =  
+      <general							
 					superscalar={superscalar.toString}
 					rename={rename.toString}
 					reorder={reorder.toString}
@@ -46,7 +51,12 @@ class CpuCfg(
 					output={output}
 					vdd={vdd.toString}
 					freq={freq.toString}
-				/>
+				/>;
+    
+		// this XML will contain 10 general nodes, one for every trace file
+    <psatsim>
+			<config name={name}>
+				{traces map(t => generalNode(t))}
 				<execution
 					architecture="standard"
 					integer={integerFu.toString}
@@ -62,5 +72,5 @@ class CpuCfg(
 				</memory>
 		  </config>
     </psatsim>
-  
+  }
 }

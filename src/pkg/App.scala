@@ -1,4 +1,7 @@
-import scala.xml.XML
+package pkg
+
+//import pkg.PSATSim.RsbArchitecture
+//import pkg.CpuCfg
 
 object App {
   def main(args: Array[String]): Unit = {
@@ -7,7 +10,7 @@ object App {
     val cpu1 = new CpuCfg(
         "config1", 1, 2, 3,
         RsbArchitecture.centralized, true,
-        "compress.tra", 2.2, 600,
+        2.2, 600,
         2, 1, 1, 1)  
     
 //		val printer = new scala.xml.PrettyPrinter(80, 2)
