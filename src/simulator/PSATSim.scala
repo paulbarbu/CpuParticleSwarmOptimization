@@ -1,7 +1,8 @@
 package simulator
 
-import sys.process._
 import java.nio.file.Paths
+
+import scala.sys.process._
 import scala.xml.XML
 
 class PSATSim(val simPath: String) {

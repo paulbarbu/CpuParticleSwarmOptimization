@@ -1,9 +1,8 @@
-package main
+package main 
 
 import simulator.PSATSim
-import simulator.RsbArchitecture
 import simulator.PSATSimCfg
-import java.nio.file.Paths
+import simulator.RsbArchitecture
 
 object App {
   def main(args: Array[String]): Unit = {
@@ -14,15 +13,21 @@ object App {
     val cpu1 = new PSATSimCfg(
         "config1", 1, 2, 3,
         RsbArchitecture.centralized, true,
-        2.2, 600,
+        2.2, 600.0,
         2, 1, 1, 1)  
+    
     
 //		val printer = new scala.xml.PrettyPrinter(80, 2)
 //		println(printer.format(cpu1 getXml))
     
     cpu1.save(psatsimPath)
     sim.run(cpu1, psatsimPath, psatsimName)
-		println(sim.readResults(cpu1.output))    
+		println(sim.readResults(cpu1.output))
+		
+		
+		
+    cpu1.superscalar = 10
+    println(cpu1.superscalar)
   }
   
 }
