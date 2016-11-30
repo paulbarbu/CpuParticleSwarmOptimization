@@ -26,7 +26,7 @@ class PSATSimCfg(
     private var _rsb_architecture: RsbArchitecture,
     private var _separate_dispatch: Boolean,
     private var _vdd: Double,
-    private var _freq: Double,
+    private var _freq: Int,
     private var _integerFu: Int,
     private var _floatingFu: Int,
     private var _branchFu: Int,
@@ -45,26 +45,26 @@ class PSATSimCfg(
     XML.save(Paths.get(path, name + ".xml").toString, getXml)
   }
   
-  def validate: Boolean = {
-    return true
-    //TODO: write this
-  }
-  
-  def randomize() = {
-    var r = new Random()
-    
-    superscalar = r.nextInt(16) + 1
-    rename = r.nextInt(512) + 1
-    reorder = r.nextInt(512) + 1
-    rsb_architecture = RsbArchitecture(r.nextInt(4))
-    separate_dispatch = r.nextBoolean()
-    vdd = minVdd + (maxVdd - minVdd) * r.nextDouble()
-    freq = minFreq + (maxFreq - minFreq) * r.nextDouble()
-    integerFu = r.nextInt(8) + 1
-    floatingFu = r.nextInt(8) + 1
-    branchFu = r.nextInt(8) + 1
-    memoryFu = r.nextInt(8) + 1
-  }
+//  def validate: Boolean = {
+//    return true
+//    //TODO: write this
+//  }
+//  
+//  def randomize() = {
+//    var r = new Random()
+//    
+//    superscalar = r.nextInt(16) + 1
+//    rename = r.nextInt(512) + 1
+//    reorder = r.nextInt(512) + 1
+//    rsb_architecture = RsbArchitecture(r.nextInt(3))
+//    separate_dispatch = r.nextBoolean()
+//    vdd = minVdd + (maxVdd - minVdd) * r.nextDouble()
+//    freq = minFreq + (maxFreq - minFreq) * r.nextDouble()
+//    integerFu = r.nextInt(8) + 1
+//    floatingFu = r.nextInt(8) + 1
+//    branchFu = r.nextInt(8) + 1
+//    memoryFu = r.nextInt(8) + 1
+//  }
   
   // getter and setter for the superscalar parameter
   def superscalar = _superscalar
@@ -96,7 +96,7 @@ class PSATSimCfg(
   def separate_dispatch_= (value: Boolean) = _separate_dispatch = value
   
   // getter and setter for the vdd parameter
-  def vdd = _separate_dispatch
+  def vdd = _vdd
   def vdd_= (value: Double) = value match {
     case retval if (value >= minVdd && value <= maxVdd) => _vdd = retval
     case _ => throw new IllegalArgumentException(value + " is not a valid vdd value!")
@@ -104,7 +104,7 @@ class PSATSimCfg(
   
   // getter and setter for the freq parameter
   def freq = _freq
-  def freq_= (value: Double) = value match {
+  def freq_= (value: Int) = value match {
     case retval if (value >= minFreq && value <= maxFreq) => _freq = retval
     case _ => throw new IllegalArgumentException(value + " is not a valid freq value!")
   }
@@ -148,8 +148,8 @@ class PSATSimCfg(
 					seed="0"
 					trace={trace}
 					output={output}
-					vdd={vdd.toString}
-					freq={freq.toString}
+					vdd={"%1.2f".format(vdd)}
+					frequency={freq.toString}
 				/>;
     
 		// this XML will contain 10 general nodes, one for every trace file

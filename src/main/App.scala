@@ -4,30 +4,66 @@ import simulator.PSATSim
 import simulator.PSATSimCfg
 import simulator.RsbArchitecture
 
+import jmetal.core.Algorithm;
+import jmetal.core.Problem;
+import jmetal.core.SolutionSet;
+import jmetal.metaheuristics.smpso.SMPSO;
+import jmetal.operators.mutation.Mutation;
+import jmetal.operators.mutation.MutationFactory;
+import jmetal.problems.ProblemFactory;
+import jmetal.problems.ZDT.ZDT4;
+import jmetal.qualityIndicator.QualityIndicator;
+import jmetal.util.Configuration;
+import jmetal.util.JMException;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+
 object App {
-  def main(args: Array[String]): Unit = {
-    //TODO: Runner (runs a simulator cfg), PSatSIM (validate cfg, ie l2 >l1, etc), PsatSimCfg (randomize, setRob(val or -val))
-    val psatsimPath = "E:/Facultate/SOAC/psatsim/PSATSim"
-    val psatsimName = "psatsim_con.exe"
-    val sim = new PSATSim(psatsimPath)
-    val cpu1 = new PSATSimCfg(
-        "config1", 1, 2, 3,
-        RsbArchitecture.centralized, true,
-        2.2, 600.0,
-        2, 1, 1, 1)  
+  def main(args: Array[String]): Unit = {   
+    var indicators : QualityIndicator = null
+    // Logger object and file to store log messages
+    var logger_      = Configuration.logger_ ;
+    var fileHandler_ = new FileHandler("SMPSO_main.log"); 
+    logger_.addHandler(fileHandler_) ;
     
+    var problem = new CpuProblem()     
+    var algorithm = new SMPSO(problem)
     
-//		val printer = new scala.xml.PrettyPrinter(80, 2)
-//		println(printer.format(cpu1 getXml))
+    // Algorithm parameters
+    algorithm.setInputParameter("swarmSize", 1)
+    algorithm.setInputParameter("archiveSize", 100)
+    algorithm.setInputParameter("maxIterations", 0)
+
+    val parameters = new HashMap[String, Double]()
+    parameters.put("probability", 1.0/problem.getNumberOfVariables())
+    parameters.put("distributionIndex", 20.0)
+    var mutation = MutationFactory.getMutationOperator("PolynomialMutation", parameters)                    
+
+    algorithm.addOperator("mutation", mutation)
     
-    cpu1.save(psatsimPath)
-    sim.run(cpu1, psatsimPath, psatsimName)
-		println(sim.readResults(cpu1.output))
-		
-		
-		
-    cpu1.superscalar = 10
-    println(cpu1.superscalar)
+    // Execute the Algorithm 
+    var initTime = System.currentTimeMillis()
+    var population = algorithm.execute()
+    var estimatedTime = System.currentTimeMillis() - initTime
+    
+    // Result messages 
+    logger_.info("Total execution time: " + estimatedTime/1000 + " s")
+    logger_.info("Objectives values have been writen to file FUN")
+    population.printObjectivesToFile("FUN")
+    logger_.info("Variables values have been writen to file VAR")
+    population.printVariablesToFile("VAR")
+    
+    if (indicators != null) {
+      logger_.info("Quality indicators")
+      logger_.info("Hypervolume: " + indicators.getHypervolume(population))
+      logger_.info("GD         : " + indicators.getGD(population))
+      logger_.info("IGD        : " + indicators.getIGD(population))
+      logger_.info("Spread     : " + indicators.getSpread(population))
+      logger_.info("Epsilon    : " + indicators.getEpsilon(population))
+    }
   }
   
 }

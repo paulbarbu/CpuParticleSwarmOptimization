@@ -21,6 +21,8 @@
 
 package jmetal.util.wrapper;
 
+import main.CpuSolutionType;
+
 import jmetal.core.Solution;
 import jmetal.core.SolutionType;
 import jmetal.encodings.solutionType.ArrayRealAndBinarySolutionType;
@@ -61,7 +63,8 @@ public class XReal {
 	 * @throws JMException
 	 */
 	public double getValue(int index) throws JMException {
-		if ((type_.getClass() == RealSolutionType.class) ||
+		if ((type_.getClass() == CpuSolutionType.class) ||
+				(type_.getClass() == RealSolutionType.class) ||
 				(type_.getClass() == BinaryRealSolutionType.class)){
 			return solution_.getDecisionVariables()[index].getValue() ;			
 		} 
@@ -85,7 +88,8 @@ public class XReal {
 	 * @throws JMException
 	 */
 	public void setValue(int index, double value) throws JMException {
-		if (type_.getClass() == RealSolutionType.class)
+		if ((type_.getClass() == CpuSolutionType.class) ||
+				type_.getClass() == RealSolutionType.class)
 			solution_.getDecisionVariables()[index].setValue(value) ;
 		else if (type_.getClass() == ArrayRealSolutionType.class)
 			((ArrayReal)(solution_.getDecisionVariables()[0])).array_[index]=value ;
@@ -103,7 +107,8 @@ public class XReal {
 	 * @throws JMException
 	 */
 	public double getLowerBound(int index) throws JMException {
-		if ((type_.getClass() == RealSolutionType.class) ||
+		if ((type_.getClass() == CpuSolutionType.class) ||
+				(type_.getClass() == RealSolutionType.class) ||
 				(type_.getClass() == BinaryRealSolutionType.class))
 			return solution_.getDecisionVariables()[index].getLowerBound() ;
 		else if (type_.getClass() == ArrayRealSolutionType.class) 
@@ -125,7 +130,8 @@ public class XReal {
 	 * @throws JMException
 	 */
 	public double getUpperBound(int index) throws JMException {
-		if ((type_.getClass() == RealSolutionType.class) ||
+		if ((type_.getClass() == CpuSolutionType.class) ||
+				(type_.getClass() == RealSolutionType.class) ||
 				(type_.getClass() == BinaryRealSolutionType.class))			
 			return solution_.getDecisionVariables()[index].getUpperBound() ;
 		else if (type_.getClass() == ArrayRealSolutionType.class) 
@@ -144,7 +150,8 @@ public class XReal {
 	 * @return
 	 */
 	public int getNumberOfDecisionVariables() {
-		if ((type_.getClass() == RealSolutionType.class) ||
+		if ((type_.getClass() == CpuSolutionType.class) ||
+				(type_.getClass() == RealSolutionType.class) ||
 				(type_.getClass() == BinaryRealSolutionType.class))		
 			return solution_.getDecisionVariables().length ;
 		else if (type_.getClass() == ArrayRealSolutionType.class) 
@@ -160,7 +167,8 @@ public class XReal {
 	 * @return
 	 */
 	public int size() {
-		if ((type_.getClass().equals(RealSolutionType.class)) ||
+		if ((type_.getClass() == CpuSolutionType.class) ||
+				(type_.getClass().equals(RealSolutionType.class)) ||
 				(type_.getClass().equals(BinaryRealSolutionType.class)))		
 			return solution_.getDecisionVariables().length ;
 		else if (type_.getClass().equals(ArrayRealSolutionType.class)) 

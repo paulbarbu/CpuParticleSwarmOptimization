@@ -21,6 +21,8 @@
 
 package jmetal.operators.mutation;
 
+import main.CpuSolutionType;
+
 import jmetal.core.Solution;
 import jmetal.encodings.solutionType.ArrayRealSolutionType;
 import jmetal.encodings.solutionType.RealSolutionType;
@@ -46,7 +48,7 @@ public class PolynomialMutation extends Mutation {
   /**
    * Valid solution types to apply this operator 
    */
-  private static final List VALID_TYPES = Arrays.asList(RealSolutionType.class, ArrayRealSolutionType.class) ;
+  private static final List VALID_TYPES = Arrays.asList(CpuSolutionType.class, RealSolutionType.class, ArrayRealSolutionType.class) ;
 
 	/**
 	 * Constructor
