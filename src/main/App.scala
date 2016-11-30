@@ -64,6 +64,13 @@ object App {
       logger_.info("Spread     : " + indicators.getSpread(population))
       logger_.info("Epsilon    : " + indicators.getEpsilon(population))
     }
+    
+    
+    for(i <- 0 until population.size())
+    {
+      var solution = population.get(i)
+      println("Solution 0, CPI = %1.3f, Energy = %1.3f".format(solution.getObjective(0), solution.getObjective(1)))
+    }
   }
   
 }

@@ -6,7 +6,7 @@ import scala.sys.process._
 import scala.xml.XML
 
 class PSATSim(val simPath: String) {
-  val NumThreads = 5
+  val NumThreads = 4
   
   def run(cpu: PSATSimCfg, simPath: String, simName: String, simArgs: Seq[String] = Seq()) = {
     val cmd = Seq(
