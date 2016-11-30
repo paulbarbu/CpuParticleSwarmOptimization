@@ -29,9 +29,9 @@ class PSATSim(val simPath: String) {
     val energies =  variations map (variation => variation \ "general" \@ "energy") map(_.toDouble)
     
     // CPI = 1/IPC
-    val ipcs = variations map (variation => variation \ "general" \@ "ipc") map(1/_.toDouble)
+    val cpis = variations map (variation => variation \ "general" \@ "ipc") map(1/_.toDouble)
        
     // I compute the average CPI and Energy 
-    (ipcs.sum / ipcs.length, energies.sum / energies.length)
+    (cpis.sum / cpis.length, energies.sum / energies.length)
   }
 }
