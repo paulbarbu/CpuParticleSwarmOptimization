@@ -69,7 +69,7 @@ object App {
     for(i <- 0 until population.size())
     {
       var solution = population.get(i)
-      println("Solution 0, CPI = %1.3f, Energy = %1.3f".format(solution.getObjective(0), solution.getObjective(1)))
+      println("Solution %d, CPI = %1.3f, Energy = %1.3f".format(i, solution.getObjective(0), solution.getObjective(1)))
     }
   }
   
