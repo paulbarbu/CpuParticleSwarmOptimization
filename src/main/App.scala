@@ -16,6 +16,8 @@ import jmetal.qualityIndicator.QualityIndicator;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 
+
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.FileHandler;
@@ -64,6 +66,10 @@ object App {
       logger_.info("Spread     : " + indicators.getSpread(population))
       logger_.info("Epsilon    : " + indicators.getEpsilon(population))
     }
+    
+    val plotter = new Plotter
+    
+    plotter.plot(population)
     
     
     for(i <- 0 until population.size())

@@ -22,16 +22,26 @@ class PSATSim(val simPath: String) {
   }
   
   def readResults(outFile: String) = {
-    val resultsXml = XML.loadFile(Paths.get(simPath, outFile).toString)
-    val variations = resultsXml \\ "psatsim_results" \\ "variation"
+    val xmlFile = Paths.get(simPath, outFile).toString
     
-    // take every variation's energy and convert it to double
-    val energies =  variations map (variation => variation \ "general" \@ "energy") map(_.toDouble)
-    
-    // CPI = 1/IPC
-    val cpis = variations map (variation => variation \ "general" \@ "ipc") map(1/_.toDouble)
+    try{
+      val resultsXml = XML.loadFile(xmlFile)
+      val variations = resultsXml \\ "psatsim_results" \\ "variation"
+      
+      // take every variation's energy and convert it to double
+      val energies =  variations map (variation => variation \ "general" \@ "energy") map(_.toDouble)
+      
+      // CPI = 1/IPC
+      val cpis = variations map (variation => variation \ "general" \@ "ipc") map(1/_.toDouble)
        
-    // I compute the average CPI and Energy 
-    (cpis.sum / cpis.length, energies.sum / energies.length)
+      // I compute the average CPI and Energy 
+      (cpis.sum / cpis.length, energies.sum / energies.length)
+    }
+    catch
+    {
+      case e :org.xml.sax.SAXParseException =>
+        System.err.println("Cannot properly parse the %s XML: %s".format(xmlFile, e.toString))
+        (Double.MaxValue, Double.MaxValue)
+    }
   }
 }
