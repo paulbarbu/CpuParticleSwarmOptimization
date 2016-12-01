@@ -11,8 +11,7 @@ Hence you'll need to download the simulator in order to make use this project.
 Libraries used:
 
 * scala-xml used to read/write the simulator's XML files
-* jMetal used for its implementation of PSO (namely SMPSO)
- * I modified the `XReal` and `PolynomialMutation` classes in order to work with my `CpuSolutionType`
+* jMetal used for its implementation of PSO (namely SMPSO) (I modified the `XReal` and `PolynomialMutation` classes in order to work with my `CpuSolutionType`)
 * JFreeChart used to plot the dominant CPU configurations
 
 How to build & run
