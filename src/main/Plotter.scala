@@ -9,11 +9,12 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ChartUtilities
 
 import java.io._
+import java.awt.Color
 
 import scala.collection.JavaConversions._
 
 class Plotter {
-  def plot(population: SolutionSet) = {
+  def plot(population: SolutionSet, plotPath: String) = {
     val series = new XYSeries("Best CPUs")
         
     population.iterator.toList.foreach{
@@ -33,11 +34,16 @@ class Plotter {
         true,
         false
         )
-    val renderer = chart.getPlot.asInstanceOf[XYPlot].getRenderer.asInstanceOf[XYLineAndShapeRenderer]
+    val plt = chart.getPlot.asInstanceOf[XYPlot]
+    plt.setBackgroundPaint(Color.WHITE)
+    plt.setDomainGridlinePaint(Color.lightGray)
+    plt.setRangeGridlinePaint(Color.lightGray)
+
+    val renderer = plt.getRenderer.asInstanceOf[XYLineAndShapeRenderer]
     renderer.setSeriesLinesVisible(0, false)   
     renderer.setSeriesShapesVisible(0, true)
     renderer.setSeriesShapesFilled(0, true)
     
-    ChartUtilities.saveChartAsPNG(new File("plot.png"), chart, 800, 600)
+    ChartUtilities.saveChartAsPNG(new File(plotPath), chart, 800, 600)
   }
 }

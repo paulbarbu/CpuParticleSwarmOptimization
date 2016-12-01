@@ -9,7 +9,7 @@ import jmetal.encodings.solutionType._
 class CpuSolutionType(problem: Problem) extends RealSolutionType(problem) {
   
   override def createVariables(): Array[Variable] = {
-    var variables = new Array[Variable](11)
+    val variables = new Array[Variable](11)
     variables(0) = new Int(1, 16) // superscalar
     variables(1) = new Int(1, 512) // rename
     variables(2) = new Int(1, 512) // reorder
@@ -22,6 +22,6 @@ class CpuSolutionType(problem: Problem) extends RealSolutionType(problem) {
     variables(9) = new Int(1, 8) // branch FU
     variables(10) = new Int(1, 8) // memory FU
     
-    return variables
+    variables
   }
 }

@@ -16,8 +16,8 @@ class CpuProblem extends Problem {
   
   var variables = solutionType_.createVariables
     
-  lowerLimit_ = new Array[Double](11);
-  upperLimit_ = new Array[Double](11);
+  lowerLimit_ = new Array[Double](11)
+  upperLimit_ = new Array[Double](11)
     
   for (i <- 0 until numberOfVariables_){
     lowerLimit_(i) = variables(i).getLowerBound

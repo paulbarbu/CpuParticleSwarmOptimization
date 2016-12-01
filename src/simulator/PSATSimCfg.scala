@@ -35,7 +35,8 @@ class PSATSimCfg(
   val input = name + ".xml"
   val output = name + "_out.xml"
   
-  private val traces = List("applu.tra", "compress.tra", "epic.tra", "fpppp.tra", "ijpeg.tra", "mpeg2d.tra", "mpeg2e.tra", "pegwitd.tra", "perl.tra", "toast.tra")
+  private val traces = List("applu.tra", "compress.tra", "epic.tra", "fpppp.tra", "ijpeg.tra",
+      "mpeg2d.tra", "mpeg2e.tra", "pegwitd.tra", "perl.tra", "toast.tra")
   private val minVdd = 1.8 // in Volts
   private val maxVdd = 3.3
   private val minFreq = 10 // in Mhz
