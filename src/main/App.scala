@@ -26,7 +26,15 @@ import java.nio.file.Paths
 import java.io.File
 
 object App {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {        
+    var opts = Map(
+        'swarmSize -> 1, // number of particles
+        'archiveSize -> 100, // max. number of non-dominated particles
+        'maxIterations -> 0,
+        'psatsimPath -> "E:/Facultate/SOAC/psatsim/PSATSim",
+        'psatsimName -> "psatsim_con.exe")
+    opts = ArgParser.getOptions(opts, args.toList)
+            
     val now = Calendar.getInstance.getTime
     val dateFmt = new SimpleDateFormat("YYYY-MM-dd HH.mm.ss")
     val dirPath = dateFmt.format(now).toString
@@ -35,6 +43,7 @@ object App {
     var funPath = Paths.get(dirPath, "FUN").toString
     var varPath = Paths.get(dirPath, "VAR").toString
     var plotPath = Paths.get(dirPath, "plot.png").toString
+    var logPath = Paths.get(dirPath, "SOMPSO.log").toString
     
     //save every run in a different directory
     val dir = new File(dirPath)
@@ -43,6 +52,7 @@ object App {
       funPath = "FUN"
       varPath = "VAR"
       plotPath = "plot.png"
+      logPath = "SOMPSO.log"
     }
     
 //    val psatsimPath = "E:/Facultate/SOAC/psatsim/PSATSim"
@@ -61,31 +71,33 @@ object App {
 //    println(cpi, energy)
 //    return 1
     
-    var indicators : QualityIndicator = null
+    val indicators : QualityIndicator = null
     // Logger object and file to store log messages
-    var logger_      = Configuration.logger_
-    var fileHandler_ = new FileHandler("SMPSO_main.log") 
+    val logger_      = Configuration.logger_
+    val fileHandler_ = new FileHandler(logPath) 
     logger_.addHandler(fileHandler_)
     
-    var problem = new CpuProblem 
+    logger_.info(opts.toString)
+    
+    var problem = new CpuProblem(opts('psatsimPath).toString, opts('psatsimName).toString) 
     var algorithm = new SMPSO(problem)
     
     // Algorithm parameters
-    algorithm.setInputParameter("swarmSize", 1)
-    algorithm.setInputParameter("archiveSize", 100)
-    algorithm.setInputParameter("maxIterations", 0)
+    algorithm.setInputParameter("swarmSize", opts('swarmSize))
+    algorithm.setInputParameter("archiveSize", opts('archiveSize))
+    algorithm.setInputParameter("maxIterations", opts('maxIterations))
 
     val parameters = new HashMap[String, Double]
     parameters.put("probability", 1.0/problem.getNumberOfVariables)
     parameters.put("distributionIndex", 20.0)
-    var mutation = MutationFactory.getMutationOperator("PolynomialMutation", parameters)                    
+    val mutation = MutationFactory.getMutationOperator("PolynomialMutation", parameters)                    
 
     algorithm.addOperator("mutation", mutation)
     
     // Execute the Algorithm 
-    var initTime = System.currentTimeMillis
-    var population = algorithm.execute
-    var estimatedTime = System.currentTimeMillis - initTime   
+    val initTime = System.currentTimeMillis
+    val population = algorithm.execute
+    val estimatedTime = System.currentTimeMillis - initTime   
     
     if (indicators != null) {
       logger_.info("Quality indicators")
@@ -102,16 +114,18 @@ object App {
     population.printObjectivesToFile(funPath)
     population.printVariablesToFile(varPath)
          
-    for(i <- 0 until population.size)
-    {
-      var solution = population.get(i)
-      println("Solution %d, CPI = %1.3f, Energy = %1.3f".format(i+1, solution.getObjective(0), solution.getObjective(1)))
-    }
-    
-    logger_.info("Total execution time: " + estimatedTime/1000 + " s")
+    logger_.info("Evaluated %d configurations for %d iterations in %d seconds (10 benchmarks)".format(
+        opts('swarmSize), 
+        opts('maxIterations),
+        estimatedTime/1000))
     logger_.info("Objectives values have been writen to file %s".format(funPath))
     logger_.info("Variables values have been writen to file %s".format(varPath))
     logger_.info("The plot has been writen to file %s".format(plotPath))
-
+    
+    for(i <- 0 until population.size)
+    {
+      val solution = population.get(i)
+      println("Solution %d, CPI = %1.3f, Energy = %1.3f".format(i+1, solution.getObjective(0), solution.getObjective(1)))
+    }
   }
 }

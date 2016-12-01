@@ -6,7 +6,7 @@ import jmetal.encodings.variable._
 import simulator._
 import jmetal.util.comparators.NumberOfViolatedConstraintComparator
 
-class CpuProblem extends Problem {
+class CpuProblem(val psatsimPath: String, val psatsimName: String) extends Problem {
   numberOfVariables_ = 11
   numberOfObjectives_ = 2
   numberOfConstraints_ = 0
@@ -25,8 +25,6 @@ class CpuProblem extends Problem {
   }
   
   def evaluate(solution: Solution) = {
-    val psatsimPath = "E:/Facultate/SOAC/psatsim/PSATSim"
-    val psatsimName = "psatsim_con.exe"
     val sim = new PSATSim(psatsimPath)
     
     val variables = solution.getDecisionVariables
