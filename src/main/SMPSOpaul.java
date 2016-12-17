@@ -34,7 +34,9 @@ import jmetal.util.wrapper.XReal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -160,7 +162,8 @@ public class SMPSOpaul extends Algorithm {
 
   } // SMPSO
   private double trueHypervolume_;
-  private Hypervolume hy_;
+  private List<Double> hypervolumeValues_ = new ArrayList<Double>();
+  private Hypervolume hy_ = new Hypervolume();;
   private SolutionSet trueFront_;
   private double deltaMax_[];
   private double deltaMin_[];
@@ -402,9 +405,12 @@ public class SMPSOpaul extends Algorithm {
 
     //Crowding the leaders_
     distance_.crowdingDistanceAssignment(leaders_, problem_.getNumberOfObjectives());
+    
+    hypervolumeValues_.add(
+    		hy_.calculateHypervolume(particles_.writeObjectivesToMatrix(), particles_.size(), problem_.getNumberOfObjectives()));
 
     //-> Step 7. Iterations ..        
-    while (iteration_ < maxIterations_) {
+    while (iteration_ < maxIterations_ && !isConvergent()) {
       try {
         //Compute the speed_
         computeSpeed(iteration_, maxIterations_);
@@ -444,6 +450,10 @@ public class SMPSOpaul extends Algorithm {
       distance_.crowdingDistanceAssignment(leaders_,
         problem_.getNumberOfObjectives());
       iteration_++;
+      
+      hypervolumeValues_.add(
+      		hy_.calculateHypervolume(leaders_.writeObjectivesToMatrix(), leaders_.size(), problem_.getNumberOfObjectives()));
+      
    /*   
       if ((iteration_ % 1) == 0) {
         leaders_.printObjectivesOfValidSolutionsToFile("FUNV"+iteration_) ;
@@ -457,6 +467,36 @@ public class SMPSOpaul extends Algorithm {
 
     return this.leaders_;
   } // execute
+  
+  /**
+   * Get the hypervolume values for each generation
+   */
+  public List<Double> getHv()
+  {
+	  return hypervolumeValues_;
+  }
+  
+  /**
+   * Test whether the solution is convergent
+   */
+  public boolean isConvergent()
+  {
+	  double EPSILON = 0.001;
+	  boolean convergent = false;
+	  
+	  if(iteration_ > 2)
+	  {
+		  Double last = hypervolumeValues_.get(hypervolumeValues_.size()-1);
+		  Double beforeLast = hypervolumeValues_.get(hypervolumeValues_.size()-2);
+		  
+		  if(Math.abs(last - beforeLast) < EPSILON)
+		  {
+			  convergent = true;
+		  }
+	  }
+	  
+	  return convergent;
+  }
 
   /** 
    * Gets the leaders of the SMPSO algorithm

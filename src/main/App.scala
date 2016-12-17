@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat
 import java.nio.file.Paths
 import java.io.File
 
+import scala.collection.JavaConversions._
+
 object App {
   def main(args: Array[String]): Unit = {        
     var opts = Map(
@@ -42,7 +44,8 @@ object App {
     println(dirPath)
     var funPath = Paths.get(dirPath, "FUN").toString
     var varPath = Paths.get(dirPath, "VAR").toString
-    var plotPath = Paths.get(dirPath, "plot.png").toString
+    var plotSolutionsPath = Paths.get(dirPath, "plot-solutions.png").toString
+    var plotHypervolumePath = Paths.get(dirPath, "plot-hv.png").toString
     var logPath = Paths.get(dirPath, "SOMPSO.log").toString
     
     //save every run in a different directory
@@ -51,7 +54,8 @@ object App {
     {
       funPath = "FUN"
       varPath = "VAR"
-      plotPath = "plot.png"
+      plotSolutionsPath = "plot-solutions.png"
+      plotHypervolumePath = "plot-hv.png"
       logPath = "SOMPSO.log"
     }
     
@@ -98,27 +102,10 @@ object App {
     val population = algorithm.execute
     val estimatedTime = System.currentTimeMillis - initTime   
     
-//    val hv = new Hypervolume().hypervolume(                    
-//                 population.writeObjectivesToMatrix(),
-//                 Array.ofDim[Double](2,2),
-//                 problem.getNumberOfObjectives());
-//    val hv2 = new Hypervolume().hypervolume(                    
-//                 population.writeObjectivesToMatrix(),
-//                 population.writeObjectivesToMatrix(),
-//                 problem.getNumberOfObjectives());
-    
-    val hv3 = new Hypervolume().calculateHypervolume(
-        population.writeObjectivesToMatrix(),
-        population.size(),
-        problem.getNumberOfObjectives);
-//    
-//    println(hv);
-//    println(hv2);
-    println(hv3);
-        
     val plotter = new Plotter
     
-    plotter.plot(population, plotPath)
+    plotter.plotSolutions(population, plotSolutionsPath)
+    plotter.plotHypervolume(algorithm.getHv, plotHypervolumePath)
     population.printObjectivesToFile(funPath)
     population.printVariablesToFile(varPath)
          
@@ -128,10 +115,17 @@ object App {
         estimatedTime/1000))
     logger_.info("Objectives values have been writen to file %s".format(funPath))
     logger_.info("Variables values have been writen to file %s".format(varPath))
-    logger_.info("The plot has been writen to file %s".format(plotPath))
-//    logger_.info("The hypervolume value: %f".format(hv))
-//    logger_.info("The hypervolume 2 value: %f".format(hv2))
-    logger_.info("The hypervolume 3 value: %f".format(hv3))
+    logger_.info("The solutions plot has been writen to file %s".format(plotSolutionsPath))
+    logger_.info("The hypervolume plot has been writen to file %s".format(plotHypervolumePath))
+    logger_.info("The hypervolume values are: %s".format(algorithm.getHv))
+    if(algorithm.isConvergent)
+    {
+      logger_.info("Stopped because of converging solutions")
+    }
+    else
+    {
+      logger_.info("Stopped because of max. iterations")
+    }
     
     for(i <- 0 until population.size)
     {
@@ -140,3 +134,4 @@ object App {
     }
   }
 }
+
