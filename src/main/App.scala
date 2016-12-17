@@ -12,7 +12,7 @@ import jmetal.operators.mutation.Mutation
 import jmetal.operators.mutation.MutationFactory
 import jmetal.problems.ProblemFactory
 import jmetal.problems.ZDT.ZDT4
-import jmetal.qualityIndicator.QualityIndicator
+import jmetal.qualityIndicator.Hypervolume
 import jmetal.util.Configuration
 import jmetal.util.JMException
 
@@ -28,10 +28,10 @@ import java.io.File
 object App {
   def main(args: Array[String]): Unit = {        
     var opts = Map(
-        'swarmSize -> 1, // number of particles
+        'swarmSize -> 2, // number of particles
         'archiveSize -> 100, // max. number of non-dominated particles
-        'maxIterations -> 0,
-        'psatsimPath -> "E:/Facultate/SOAC/psatsim/PSATSim",
+        'maxIterations -> 2,
+        'psatsimPath -> "E:/localhost/CpuParticleSwarmOptimization/psatsim/PSATSim",
         'psatsimName -> "psatsim_con.exe")
     opts = ArgParser.getOptions(opts, args.toList)
             
@@ -71,7 +71,6 @@ object App {
 //    println(cpi, energy)
 //    return 1
     
-    val indicators : QualityIndicator = null
     // Logger object and file to store log messages
     val logger_      = Configuration.logger_
     val fileHandler_ = new FileHandler(logPath) 
@@ -80,7 +79,7 @@ object App {
     logger_.info(opts.toString)
     
     var problem = new CpuProblem(opts('psatsimPath).toString, opts('psatsimName).toString) 
-    var algorithm = new SMPSO(problem)
+    var algorithm = new SMPSOpaul(problem)
     
     // Algorithm parameters
     algorithm.setInputParameter("swarmSize", opts('swarmSize))
@@ -99,15 +98,24 @@ object App {
     val population = algorithm.execute
     val estimatedTime = System.currentTimeMillis - initTime   
     
-    if (indicators != null) {
-      logger_.info("Quality indicators")
-      logger_.info("Hypervolume: " + indicators.getHypervolume(population))
-      logger_.info("GD         : " + indicators.getGD(population))
-      logger_.info("IGD        : " + indicators.getIGD(population))
-      logger_.info("Spread     : " + indicators.getSpread(population))
-      logger_.info("Epsilon    : " + indicators.getEpsilon(population))
-    }
+//    val hv = new Hypervolume().hypervolume(                    
+//                 population.writeObjectivesToMatrix(),
+//                 Array.ofDim[Double](2,2),
+//                 problem.getNumberOfObjectives());
+//    val hv2 = new Hypervolume().hypervolume(                    
+//                 population.writeObjectivesToMatrix(),
+//                 population.writeObjectivesToMatrix(),
+//                 problem.getNumberOfObjectives());
     
+    val hv3 = new Hypervolume().calculateHypervolume(
+        population.writeObjectivesToMatrix(),
+        population.size(),
+        problem.getNumberOfObjectives);
+//    
+//    println(hv);
+//    println(hv2);
+    println(hv3);
+        
     val plotter = new Plotter
     
     plotter.plot(population, plotPath)
@@ -121,6 +129,9 @@ object App {
     logger_.info("Objectives values have been writen to file %s".format(funPath))
     logger_.info("Variables values have been writen to file %s".format(varPath))
     logger_.info("The plot has been writen to file %s".format(plotPath))
+//    logger_.info("The hypervolume value: %f".format(hv))
+//    logger_.info("The hypervolume 2 value: %f".format(hv2))
+    logger_.info("The hypervolume 3 value: %f".format(hv3))
     
     for(i <- 0 until population.size)
     {
