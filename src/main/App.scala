@@ -33,6 +33,7 @@ object App {
         'swarmSize -> 2, // number of particles
         'archiveSize -> 100, // max. number of non-dominated particles
         'maxIterations -> 2,
+        'epsilon -> 0.0001,
         'psatsimPath -> "E:/localhost/CpuParticleSwarmOptimization/psatsim/PSATSim",
         'psatsimName -> "psatsim_con.exe")
     opts = ArgParser.getOptions(opts, args.toList)
@@ -89,6 +90,7 @@ object App {
     algorithm.setInputParameter("swarmSize", opts('swarmSize))
     algorithm.setInputParameter("archiveSize", opts('archiveSize))
     algorithm.setInputParameter("maxIterations", opts('maxIterations))
+    algorithm.setInputParameter("epsilon", opts('epsilon))
 
     val parameters = new HashMap[String, Double]
     parameters.put("probability", 1.0/problem.getNumberOfVariables)

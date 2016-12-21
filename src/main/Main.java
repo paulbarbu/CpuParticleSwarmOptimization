@@ -10,7 +10,7 @@ package main;
  * Then in the CLI:
  * java -jar cpuPso.jar
  * or
- * java -jar cpuPso.jar --psatsim-name psatsim_con --psatsim-path $(pwd)/psatsim/ --swarm-size 11 --max-iterations 11 --archive-size 100 
+ * java -jar cpuPso.jar --psatsim-name psatsim_con --psatsim-path $(pwd)/psatsim/ --swarm-size 11 --max-iterations 11 --archive-size 100 --epsilon 0.001 
  * 
  * http://stackoverflow.com/questions/11413888/exporting-scala-project-as-jar-from-eclipse
  */

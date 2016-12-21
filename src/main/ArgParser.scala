@@ -17,6 +17,8 @@ object ArgParser {
         getOptions(opts + ('psatsimPath -> value), rest)
       case "--psatsim-name" :: value :: rest =>
         getOptions(opts + ('psatsimName -> value), rest)
+      case "--epsilon" :: value :: rest =>
+        getOptions(opts + ('epsilon -> value.toDouble), rest)
       case opt :: rest =>
         println("Ignoring option %s".format(opt))
         getOptions(opts, rest)        

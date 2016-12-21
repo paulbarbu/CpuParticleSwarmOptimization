@@ -63,6 +63,10 @@ public class SMPSOpaul extends Algorithm {
    */
   private int maxIterations_;
   /**
+   * Stores the maximum difference between two hypervolumes
+   */
+  private double epsilon_;
+  /**
    * Stores the current number of iteration_
    */
   private int iteration_;
@@ -204,6 +208,7 @@ public class SMPSOpaul extends Algorithm {
     swarmSize_ = ((Integer) getInputParameter("swarmSize")).intValue();
     archiveSize_ = ((Integer) getInputParameter("archiveSize")).intValue();
     maxIterations_ = ((Integer) getInputParameter("maxIterations")).intValue();
+    epsilon_ = ((Double) getInputParameter("epsilon")).doubleValue();
 
     indicators_ = (QualityIndicator) getInputParameter("indicators");
 
@@ -481,7 +486,6 @@ public class SMPSOpaul extends Algorithm {
    */
   public boolean isConvergent()
   {
-	  double EPSILON = 0.001;
 	  boolean convergent = false;
 	  
 	  if(iteration_ > 2)
@@ -489,7 +493,7 @@ public class SMPSOpaul extends Algorithm {
 		  Double last = hypervolumeValues_.get(hypervolumeValues_.size()-1);
 		  Double beforeLast = hypervolumeValues_.get(hypervolumeValues_.size()-2);
 		  
-		  if(Math.abs(last - beforeLast) < EPSILON)
+		  if(Math.abs(last - beforeLast) < epsilon_)
 		  {
 			  convergent = true;
 		  }
