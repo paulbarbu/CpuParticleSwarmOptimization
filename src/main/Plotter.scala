@@ -7,11 +7,14 @@ import org.jfree.chart.plot._
 import org.jfree.chart._
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.ChartUtilities
+import org.jfree.chart.axis.NumberAxis
+import org.jfree.ui.RectangleEdge
 
 import java.io._
 import java.awt.Color
 
 import scala.collection.JavaConversions._
+import org.jfree.chart.axis.CategoryAxis
 
 class Plotter {
   def plotSolutions(population: SolutionSet, plotPath: String) = {
@@ -40,7 +43,10 @@ class Plotter {
     plt.setBackgroundPaint(Color.WHITE)
     plt.setDomainGridlinePaint(Color.lightGray)
     plt.setRangeGridlinePaint(Color.lightGray)
-
+    
+    var legend = chart.getLegend();
+    legend.setPosition(RectangleEdge.RIGHT);
+    
     val renderer = plt.getRenderer.asInstanceOf[XYLineAndShapeRenderer]
     renderer.setSeriesLinesVisible(0, false)   
     renderer.setSeriesShapesVisible(0, true)
@@ -75,6 +81,12 @@ class Plotter {
     plt.setBackgroundPaint(Color.WHITE)
     plt.setDomainGridlinePaint(Color.lightGray)
     plt.setRangeGridlinePaint(Color.lightGray)
+    
+    var xAxis = plt.getDomainAxis();
+    xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    
+    var legend = chart.getLegend();
+    legend.setPosition(RectangleEdge.RIGHT);
 
     val renderer = plt.getRenderer.asInstanceOf[XYLineAndShapeRenderer]
     renderer.setSeriesLinesVisible(0, true)   

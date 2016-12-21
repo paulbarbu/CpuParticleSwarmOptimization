@@ -46,27 +46,6 @@ class PSATSimCfg(
     XML.save(Paths.get(path, name + ".xml").toString, getXml)
   }
   
-//  def validate: Boolean = {
-//    return true
-//    //TODO: write this
-//  }
-//  
-//  def randomize() = {
-//    var r = new Random()
-//    
-//    superscalar = r.nextInt(16) + 1
-//    rename = r.nextInt(512) + 1
-//    reorder = r.nextInt(512) + 1
-//    rsb_architecture = RsbArchitecture(r.nextInt(3))
-//    separate_dispatch = r.nextBoolean()
-//    vdd = minVdd + (maxVdd - minVdd) * r.nextDouble()
-//    freq = minFreq + (maxFreq - minFreq) * r.nextDouble()
-//    integerFu = r.nextInt(8) + 1
-//    floatingFu = r.nextInt(8) + 1
-//    branchFu = r.nextInt(8) + 1
-//    memoryFu = r.nextInt(8) + 1
-//  }
-  
   // getter and setter for the superscalar parameter
   def superscalar = _superscalar
   def superscalar_= (value: Int) = value match {
