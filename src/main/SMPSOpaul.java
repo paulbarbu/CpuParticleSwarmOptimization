@@ -478,6 +478,7 @@ public class SMPSOpaul extends Algorithm {
    */
   public List<Double> getHv()
   {
+	  hypervolumeValues_.remove(0);
 	  return hypervolumeValues_;
   }
   

@@ -61,7 +61,7 @@ class Plotter {
     val maxValue = hvValues.max
         
     hvValues.zipWithIndex foreach { 
-      case(value, i) => series.add(i, value/maxValue)
+      case(value, i) => series.add(i, value)
     }
     
     val dataSet = new XYSeriesCollection
@@ -70,7 +70,7 @@ class Plotter {
     val chart: JFreeChart = ChartFactory.createXYLineChart(
         "Hypervolume evolution",
         "Generation number", // x
-        "Hypervolume [%]", // y
+        "Hypervolume", // y
         dataSet,
         PlotOrientation.VERTICAL,
         true,
